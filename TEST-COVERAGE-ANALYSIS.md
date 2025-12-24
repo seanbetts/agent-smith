@@ -1,6 +1,6 @@
 # Test Coverage Analysis
 
-Analysis of current test coverage and identification of gaps in the Agent Smith backend.
+Analysis of current test coverage and identification of gaps in the sideBar backend.
 
 **Date**: 2025-12-23
 **Total Test Files**: 10 (after removing list_skills tests)
