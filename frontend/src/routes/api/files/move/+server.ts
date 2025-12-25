@@ -4,17 +4,20 @@ import type { RequestHandler } from './$types';
 const API_URL = process.env.API_URL || 'http://skills-api:8001';
 const BEARER_TOKEN = process.env.BEARER_TOKEN || '';
 
-export const GET: RequestHandler = async ({ fetch, url }) => {
+export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
-    const basePath = url.searchParams.get('basePath') || 'documents';
-    if (basePath === 'notes') {
+    const body = await request.json();
+    if (body?.basePath === 'notes') {
       return json({ error: 'Notes are served from /api/notes' }, { status: 400 });
     }
 
-    const response = await fetch(`${API_URL}/api/files/tree?basePath=${encodeURIComponent(basePath)}`, {
+    const response = await fetch(`${API_URL}/api/files/move`, {
+      method: 'POST',
       headers: {
-        'Authorization': `Bearer ${BEARER_TOKEN}`
-      }
+        'Authorization': `Bearer ${BEARER_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
     });
 
     if (!response.ok) {
@@ -24,7 +27,7 @@ export const GET: RequestHandler = async ({ fetch, url }) => {
     const data = await response.json();
     return json(data);
   } catch (error) {
-    console.error('Failed to fetch file tree:', error);
-    return json({ error: 'Failed to load files' }, { status: 500 });
+    console.error('Failed to move file:', error);
+    return json({ error: 'Failed to move file' }, { status: 500 });
   }
 };
